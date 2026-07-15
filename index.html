@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BeLife Portal</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --primary: #5b5fef;
+      --primary-dark: #4338ca;
+      --blue: #0ea5e9;
+      --teal: #14b8a6;
+      --shadow: 0 28px 90px rgba(15, 23, 42, .14);
+      --soft-shadow: 0 14px 34px rgba(15, 23, 42, .08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(91, 95, 239, .16), transparent 28%),
+        radial-gradient(circle at 85% 82%, rgba(20, 184, 166, .14), transparent 28%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .shell {
+      width: min(1120px, 100%);
+      min-height: 680px;
+      display: grid;
+      grid-template-columns: minmax(360px, .88fr) minmax(420px, 1fr);
+      border: 1px solid rgba(226, 232, 240, .9);
+      border-radius: 30px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .78);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand-pane {
+      position: relative;
+      padding: 42px;
+      color: white;
+      overflow: hidden;
+      background:
+        linear-gradient(145deg, rgba(67, 56, 202, .98), rgba(91, 95, 239, .94) 52%, rgba(14, 165, 233, .88));
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .brand-pane::before,
+    .brand-pane::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .1);
+      pointer-events: none;
+    }
+
+    .brand-pane::before {
+      width: 360px;
+      height: 360px;
+      top: -120px;
+      right: -130px;
+    }
+
+    .brand-pane::after {
+      width: 260px;
+      height: 260px;
+      bottom: -95px;
+      left: -92px;
+    }
+
+    .brand-content,
+    .system-card {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      width: fit-content;
+      padding: 12px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .94);
+      border: 1px solid rgba(255, 255, 255, .18);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, .16);
+    }
+
+    .logo img {
+      display: block;
+      width: 178px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    h1 {
+      margin: 42px 0 0;
+      max-width: 460px;
+      font-size: clamp(38px, 4.5vw, 62px);
+      line-height: 1.02;
+      letter-spacing: -.04em;
+    }
+
+    .brand-copy {
+      margin: 18px 0 0;
+      max-width: 460px;
+      color: rgba(255, 255, 255, .82);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .system-card {
+      padding: 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      background: rgba(255, 255, 255, .12);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
+    }
+
+    .system-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, .82);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .14);
+      color: white;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #7dffcd;
+      box-shadow: 0 0 0 5px rgba(125, 255, 205, .12);
+    }
+
+    .login-pane {
+      padding: 54px 62px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: rgba(255, 255, 255, .88);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .login-pane h2 {
+      margin: 0;
+      font-size: clamp(30px, 3.2vw, 44px);
+      line-height: 1.1;
+      letter-spacing: -.035em;
+    }
+
+    .sub {
+      margin: 14px 0 34px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .portal-switch {
+      display: grid;
+      gap: 14px;
+    }
+
+    .portal-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      width: 100%;
+      min-height: 96px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--card);
+      color: inherit;
+      text-align: left;
+      text-decoration: none;
+      box-shadow: var(--soft-shadow);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      overflow: hidden;
+    }
+
+    .portal-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(91, 95, 239, .08), transparent 42%);
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+
+    .portal-card:hover,
+    .portal-card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(91, 95, 239, .42);
+      box-shadow: 0 20px 48px rgba(15, 23, 42, .13);
+      outline: none;
+    }
+
+    .portal-card:hover::before,
+    .portal-card:focus-visible::before {
+      opacity: 1;
+    }
+
+    .icon {
+      position: relative;
+      z-index: 1;
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 22px;
+      font-weight: 900;
+      background: linear-gradient(145deg, var(--primary), var(--blue));
+      box-shadow: 0 14px 28px rgba(91, 95, 239, .24);
+    }
+
+    .portal-card:nth-child(2) .icon {
+      background: linear-gradient(145deg, var(--teal), #0ea5e9);
+      box-shadow: 0 14px 28px rgba(20, 184, 166, .22);
+    }
+
+    .portal-main {
+      position: relative;
+      z-index: 1;
+    }
+
+    .portal-main strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: -.015em;
+    }
+
+    .portal-main span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .arrow {
+      position: relative;
+      z-index: 1;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      background: #eef2ff;
+      font-weight: 900;
+      transition: transform .2s ease;
+    }
+
+    .portal-card:hover .arrow,
+    .portal-card:focus-visible .arrow {
+      transform: translateX(3px);
+    }
+
+    .trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 26px;
+    }
+
+    .trust span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #475569;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: #94a3b8;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 920px) {
+      body {
+        padding: 14px;
+      }
+
+      .shell {
+        min-height: 0;
+        grid-template-columns: 1fr;
+      }
+
+      .brand-pane {
+        padding: 28px;
+        min-height: 390px;
+      }
+
+      .login-pane {
+        padding: 34px 24px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .brand-pane {
+        min-height: 340px;
+      }
+
+      .portal-card {
+        grid-template-columns: 46px minmax(0, 1fr);
+        min-height: 0;
+        padding: 15px;
+      }
+
+      .icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 15px;
+      }
+
+      .arrow {
+        display: none;
+      }
+
+      .logo img {
+        width: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell" aria-label="BeLife application portal">
+    <section class="brand-pane">
+      <div class="brand-content">
+        <div class="logo" aria-label="BeLife">
+          <img src="assets/belife.logo.png" alt="BeLife">
+        </div>
+        <h1>One secure place for your daily operations.</h1>
+        <p class="brand-copy">Open Pravah case tracking or Branch Income & Expense dashboard from one simple enterprise workspace.</p>
+      </div>
+
+      <div class="system-card">
+        <div class="status"><span class="dot"></span> All systems operational</div>
+        <p>Choose the correct workspace below. Your login and permissions remain managed inside the respective app.</p>
+      </div>
+    </section>
+
+    <section class="login-pane">
+      <p class="eyebrow">BeLife Portal</p>
+      <h2>Welcome back</h2>
+      <p class="sub">Select the dashboard you want to open.</p>
+
+      <div class="portal-switch">
+        <a class="portal-card" href="https://script.google.com/macros/s/AKfycbwtFtMp1ooSwm6sUPKUYTNkg8gp-ENDXuyFqoFeEc4_rXOX4sTZvInFLOxEbDZ3T0FI/exec">
+          <div class="icon">P</div>
+          <div class="portal-main">
+            <strong>Pravah Case Status Dashboard</strong>
+            <span>Daily appointments, DC follow-ups, status updates, remarks, and reports.</span>
+          </div>
+          <div class="arrow">→</div>
+        </a>
+
+        <a class="portal-card" href="https://script.google.com/macros/s/AKfycbxjTVSHAqjxAe-uHQwiSRnZRy3amvjGWr-g_oPhJAL27S3ynj9fANTAsZkadCfVnxbN9w/exec">
+          <div class="icon">B</div>
+          <div class="portal-main">
+            <strong>Branch Income & Expense Dashboard</strong>
+            <span>Daily branch income, expense entry, and centre dashboard access.</span>
+          </div>
+          <div class="arrow">→</div>
+        </a>
+      </div>
+
+      <div class="trust" aria-label="Trust indicators">
+        <span>Secure Login</span>
+        <span>Role Based Access</span>
+        <span>Google Apps Script Powered</span>
+      </div>
+
+      <div class="footer">
+        <span>Version 1.0.0</span>
+        <span>© BeLife Enterprise</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
